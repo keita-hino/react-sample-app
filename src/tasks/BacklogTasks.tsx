@@ -6,7 +6,8 @@ const useTask = () => {
   const [tasks, setTasks] = useState<Task[]>([])
   const getTasks = async() => {
     const collection = await db.collection('tasks').get();
-    setTasks(collection.docs.map( doc => doc.data()) as Task[]);
+    const fetchTasks = collection.docs.map( doc => doc.data()) as Task[];
+    setTasks(fetchTasks.filter( task => task.status === 'backlog'));
   }
 
   return { tasks, getTasks }

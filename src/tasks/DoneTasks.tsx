@@ -1,28 +1,15 @@
-import { useState, useEffect } from "react"
-import { db } from '../lib/firebase'
 import { Task } from '../types/task'
 
-const useDoneTasks = () => {
-  const [tasks, setTasks] = useState<Task[]>([])
-  const getTasks = async () => {
-    const collection = await db.collection('tasks').get();
-    const fetchTasks = collection.docs.map(doc => doc.data()) as Task[];
-    setTasks(fetchTasks.filter(task => task.status === 'done'));
-  }
+const doneTasks = (tasks: Task[]) => tasks.filter(task => task.status === 'done')
 
-  return { tasks, getTasks }
+type Props = {
+  tasks: Task[]
 }
 
-const DoneTasks = () => {
-  const { tasks, getTasks } = useDoneTasks()
-
-  useEffect(() => {
-    getTasks();
-  }, [])
-  
+const DoneTasks = (props: Props) => {  
   return (
     <ul>
-      {tasks.map(task => {
+      {doneTasks(props.tasks).map(task => {
         return <li className="done-task" key={ task.id }>{ task.name }</li>
       })}
     </ul>

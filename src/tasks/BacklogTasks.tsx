@@ -6,7 +6,7 @@ type Props = {
   tasks: Task[]
 }
 
-const BacklogTasks = (props: Props) => {
+const BacklogTasks: React.VFC<Props> = (props) => {
   return (
     <ul>
       {backlogTasks(props.tasks).map(task => {

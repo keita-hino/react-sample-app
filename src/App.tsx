@@ -9,7 +9,7 @@ import { db } from './lib/firebase'
 const useTasks = () => {
   const [tasks, setTasks] = useState<Task[]>([])
   const getTasks = async () => {
-    const collection = await db.collection('tasks').get();
+    const collection = await db.collection('tasks').orderBy("id").get();
     setTasks(collection.docs.map(doc => doc.data()) as Task[]);
   }
 
@@ -19,6 +19,16 @@ const useTasks = () => {
 function App() {
   const { tasks, getTasks } = useTasks()
 
+  const addTask = async (name: string) => {
+    await db.collection("tasks").add({
+      id: tasks.length + 1,
+      name: name,
+      status: 'backlog'
+    })
+
+    getTasks();
+  }
+
   useEffect(() => {
     getTasks();
   }, [])
@@ -26,7 +36,7 @@ function App() {
   return (
     <main>
       <h1>Todo</h1>
-      <InputTask/>
+      <InputTask addTask={addTask}/>
 
       <h1>Backlog</h1>
       <BacklogTasks tasks={tasks}/>

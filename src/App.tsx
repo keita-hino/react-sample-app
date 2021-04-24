@@ -29,6 +29,17 @@ function App() {
     getTasks();
   }
 
+  const doneTask = async (id: number) => {
+    // FIXME: ここでドキュメントIDを取得するために通信してるが、もっと良い方法がありそう。
+    const collection = await db.collection('tasks').where("id", "==", id).get();
+    const docId = collection.docs[0].id
+    await db.collection("tasks").doc(docId).set({
+      status: "done"
+    }, { merge: true })
+
+    getTasks();
+  }
+
   useEffect(() => {
     getTasks();
   }, [])
@@ -39,7 +50,7 @@ function App() {
       <InputTask addTask={addTask}/>
 
       <h1>Backlog</h1>
-      <BacklogTasks tasks={tasks}/>
+      <BacklogTasks tasks={tasks} doneTask={doneTask}/>
 
       <h1>Done</h1>
       <DoneTasks tasks={tasks}/>
